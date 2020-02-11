@@ -1,0 +1,89 @@
+---
+
+- name: "Install packages required for overcloud deployment"
+  yum:
+    name: "{{ undercloud_packages }}"
+    state: present
+  loop: 
+    - libguestfs-tools
+
+- name: "Configure Stack user environment for OverCloud Deployment"
+  block:
+    - name: "Create dirs for templates and images in stack home"
+      file: path=/home/stack/{{ item }} state=directory owner=stack group=stack 
+      with_items:
+        - templates
+        - images
+
+    - name: "Untar ironic-python-agent tar file"
+      unarchive:
+        src: "{{OSP_IRONIC_TAR}}"
+        dest: /home/stack/images
+        remote_src: yes
+
+    - name: "Untar overcloud full images tar file"
+      unarchive:
+        src: "{{OSP_IMAGES_TAR}}"
+        dest: /home/stack/images
+        remote_src: yes
+
+    - name: "Update Root password in overcloud images to default"
+      shell:
+        cmd: "virt-customize -a overcloud-full.qcow2 --root-password password:{{OSP_DEFAULT_ROOT_PASS}}"
+
+
+  become_user: stack
+
+
+#openstack image list
+#openstack overcloud image upload
+#openstack image list
+
+#source stackrc
+#openstack overcloud node import --introspect --provide instackenv.json
+#openstack baremetal node list
+#openstack baremetal introspection list
+
+#openstack baremetal node set ctrl01-overcloud.example.com --property capabilities=profile:control,boot_option:local
+#openstack baremetal node set compute01-overcloud.example.com --property capabilities=profile:compute,boot_option:local
+
+#openstack overcloud profiles list
+
+#cd ~/templates/
+#cat >node-config.yaml <<EOF
+#parameter_defaults:
+
+#  ControllerCount: 1 
+#  OvercloudControllerFlavor: control 
+
+#  ComputeCount: 1 
+#  OvercloudComputeFlavor: compute 
+
+
+#  NtpServer: '206.108.0.134' 
+#  NeutronNetworkType: 'vxlan,vlan' 
+#  NeutronTunnelTypes: 'vxlan' 
+
+  # additional settings
+
+#  NovaReservedHostMemory: 1024 
+#  DockerPuppetProcessCount: 1 
+
+#EOF
+
+
+#openstack overcloud container image prepare \
+#  --namespace=registry.access.redhat.com/rhosp13 \
+#  --prefix=openstack- \
+#  --tag-from-label {version}-{release} \
+#  --output-env-file=/home/stack/templates/overcloud_images.yaml
+
+#cat >deploy.sh <<EOF
+#time openstack overcloud deploy \
+#    --templates /usr/share/openstack-tripleo-heat-templates/ \
+#    -e ~/templates/overcloud_images.yaml \
+#    -e ~/templates/node-config.yaml
+
+#EOF
+
+#chmod 0700 deploy.sh
