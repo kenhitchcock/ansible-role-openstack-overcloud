@@ -6,6 +6,7 @@ OSP_ON_LIBVIRT: false
 
 undercloud_packages:
   - libguestfs-tools
+  - openstack-tripleo-heat-templates-compat
 
 OSP_IRONIC_TAR: "/usr/share/rhosp-director-images/overcloud-full-latest-13.0.tar"
 OSP_IMAGES_TAR: "/usr/share/rhosp-director-images/ironic-python-agent.tar"
