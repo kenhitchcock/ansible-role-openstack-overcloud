@@ -4,7 +4,7 @@
   yum:
     name: "{{ item }}"
     state: present
-  loop: undercloud_packages
+  loop: "{{undercloud_packages}}"
 
 - name: "Configure Stack user environment for OverCloud Deployment"
   block:
