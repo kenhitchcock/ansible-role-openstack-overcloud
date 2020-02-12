@@ -6,6 +6,7 @@
     state: present
   loop: 
     - libguestfs-tools
+    - openstack-tripleo-heat-templates-compat
 
 - name: "Configure Stack user environment for OverCloud Deployment"
   block:
@@ -30,9 +31,17 @@
     - name: "Update Root password in overcloud images to default"
       shell:
         cmd: "virt-customize -a overcloud-full.qcow2 --root-password password:{{OSP_DEFAULT_ROOT_PASS}}"
-
+        
+    # Needs more attention, what do you do when not libvirt, where does the file come from?
+    - name: "Copy instackenv.json from libvirt hypervisor"
+      synchronize: src=/root/instackenv.json dest=/home/stack/instackenv.json
+      delegate_to: "{{OSP_HYPERVISOR}}"
 
   become_user: stack
+
+
+
+
 
 
 #openstack image list

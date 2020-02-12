@@ -1,0 +1,9 @@
+{
+    "nodes": [
+     {% for key, value in OSP_NODES.iteritems() %}
+     {% if osp_version == "osp10" %}
+
+       {{ key }} = {{ value }}
+
+       {% endif %}
+{% endfor %}

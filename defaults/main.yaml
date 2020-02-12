@@ -2,9 +2,56 @@
 
 osp_version: "osp13"
 
+OSP_ON_LIBVIRT: false
+
 undercloud_packages:
   - libguestfs-tools
 
 OSP_IRONIC_TAR: "/usr/share/rhosp-director-images/overcloud-full-latest-13.0.tar"
 OSP_IMAGES_TAR: "/usr/share/rhosp-director-images/ironic-python-agent.tar"
 OSP_DEFAULT_ROOT_PASS: "password"
+OSP_HYPERVISOR: "192.168.122.1"
+
+OSP_NODES:
+  - controller-0.example.com:
+      memory: 16384
+      cpu: 8
+      disk: 60
+      network: virbr0
+      vbmcport: 6231
+      profile: control
+  - controller-1.example.com:
+      memory: 16384
+      cpu: 8
+      disk: 60
+      network: virbr0
+      vbmcport: 6232
+      profile: control
+  - controller-2.example.com:
+      memory: 16384
+      cpu: 8
+      disk: 60
+      network: virbr0
+      vbmcport: 6232
+      profile: control
+  - compute-0.example.com:
+      memory: 16384
+      cpu: 8
+      disk: 60
+      network: virbr0
+      vbmcport: 6232
+      profile: compute
+  - compute-1.example.com:
+      memory: 16384
+      cpu: 8
+      disk: 60
+      network: virbr0
+      vbmcport: 6232
+      profile: compute
+  - ceph-0.example.com:
+      memory: 16384
+      cpu: 8
+      disk: 60
+      network: virbr0
+      vbmcport: 6232
+      profile: ceph-storage
