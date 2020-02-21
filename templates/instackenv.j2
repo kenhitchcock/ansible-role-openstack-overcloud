@@ -4,6 +4,19 @@
      {% if osp_version == "osp10" %}
 
        {{ key }} = {{ value }}
+       "mac": [
+        "52:54:00:e3:21:df"
+      ],
+      "name": "{{item.key}}",
+      "pm_type": "pxe_ssh",
+      "ssh_address": "192.168.122.1",
+      "ssh_username": "root",
+      "ssh_key_filename": "/home/stack/.ssh/id_rsa",
+      "ssh_virt_type": "virsh",
+      "memory": "16384",
+      "cpu": "8",
+      "disk": "60",
+      "pm_user": "admin"
 
        {% endif %}
 {% endfor %}

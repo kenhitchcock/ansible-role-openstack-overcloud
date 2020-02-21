@@ -32,16 +32,60 @@
       args:
         chdir: "/home/stack/images"
 
-    # Needs more attention, what do you do when not libvirt, where does the file come from?
-    - name: "Copy instackenv.json from libvirt hypervisor"
-      synchronize: src=/root/instackenv.json dest=/home/stack/instackenv.json
-      delegate_to: "{{OSP_HYPERVISOR}}"
+    - name: "Remove any previous file created."
+      file:
+        state: absent
+        path: "/tmp/overcloud-nodes"
+    
+    - name: "Remove any previous instackenv.json file created."
+      file:
+        state: absent
+        path: "/root/instackenv.json"
+    
+    - name: "Create list of overcloud nodes from dict"
+      shell:
+        cmd: "echo {{item.key}} >>/tmp/overcloud-nodes"
+      with_dict: "{{OSP_NODES}}"
+      ignore_errors: true
+    
+    - name: "Copy create_instackenv.sh script"
+      copy:
+        src: files/create_instackenv.sh
+        dest: /root/create_instackenv.sh
+        owner: stack
+        group: stack
+        mode: '0750'
+    
+    
+    - name: "Create instackenv.json"
+      shell:
+        cmd: "./create_instackenv.sh"
+      args:
+        chdir: "/root/"
+
+
+ #   - name: "Create instackenv.json"
+ #     template:
+ #       src: templates/instacken.j2
+ #       dest: /home/stack/instackenv.json
+ #       owner: stack
+ #       group: stack
+ #       mode: '0750'
+    
+    - name: "Upload overcloud images."
+      shell:
+        cmd: "source /home/stack/stackrc && openstack overcloud image upload"
+      args:
+        chdir: "/home/stack/images"
 
   become_user: stack
 
 
 
-
+    # Needs more attention, what do you do when not libvirt, where does the file come from?
+    #- name: "Copy instackenv.json from libvirt hypervisor"
+    #  synchronize: src=/root/instackenv.json dest=/home/stack/instackenv.json
+    #  delegate_to: "{{OSP_HYPERVISOR}}"
 
 
 #openstack image list
